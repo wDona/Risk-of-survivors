@@ -14,6 +14,7 @@ public class MoverBolaPinchos : MonoBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody>();
+        transform.position = spawnBola.position;
         indexActual = waypoints.Length - 1;
         esperandoSalir = false;
     }
@@ -47,16 +48,19 @@ public class MoverBolaPinchos : MonoBehaviour
         if (esperandoSalir && distancia > radioWaypoint * 2f)
             esperandoSalir = false;
         
-        Debug.Log(indexActual);
         float velMax = 50f;
         
         Vector3 velFlat = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
 
+        // evita que las colisiones la muevan
+        Vector3 velDeseada = fuerzaFlat.normalized * velFlat.magnitude;
+        rb.velocity = new Vector3(velDeseada.x, 0f, velDeseada.z);
+        
         if (velFlat.magnitude > velMax)
         {
             velFlat = velFlat.normalized * velMax;
             rb.velocity = new Vector3(velFlat.x, 0f, velFlat.z);
         }
-        rb.AddTorque(new Vector3(direccion.z, 0, -direccion.x) * (velocidad * 0.5f));
+        
     }
 }
